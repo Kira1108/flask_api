@@ -7,10 +7,17 @@ from models.item import ItemModel
 class Item(Resource):
 
     parser = reqparse.RequestParser()
+
     parser.add_argument('price',    # field name accepted
     type=float,                     # data type of the field
     required=True,                  # this field has to be in the json payload
     help = 'This field can not be left blank!' # missing field help info
+    )
+
+    parser.add_argument('store_id',    # field name accepted
+    type=int,                     # data type of the field
+    required=True,                  # this field has to be in the json payload
+    help = 'Every Item needs a store id!' # missing field help info
     )
 
     @jwt_required() # we are going to authenticate before we call get method.
@@ -20,11 +27,11 @@ class Item(Resource):
             return item.json(), 200
         return {"message":'Item not exist.'}, 400
 
-    def post(self,name):
+    def post(self,name,store_id):
         if ItemModel.find_by_name(name):
             return {'message':'item already exists.'},400
         data = Item.parser.parse_args()
-        item = ItemModel(name,data['price'])
+        item = ItemModel(name,**data)
         try:
             item.save_to_db()
         except:
@@ -44,9 +51,10 @@ class Item(Resource):
         data = Item.parser.parse_args()
         item = ItemModel.find_by_name(name)
         if item is None:
-            item = ItemModel(name, data['price'])
+            item = ItemModel(name, **data)
         else:
             item.price = data['price']
+            item.store_id = data['store_id']
         item.save_to_db()
         return item.json(), 200
 
