@@ -27,7 +27,7 @@ class Item(Resource):
             return item.json(), 200
         return {"message":'Item not exist.'}, 400
 
-    def post(self,name,store_id):
+    def post(self,name):
         if ItemModel.find_by_name(name):
             return {'message':'item already exists.'},400
         data = Item.parser.parse_args()
