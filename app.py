@@ -8,7 +8,7 @@ from resources.user import UserRegister
 from resources.item import Item, Itemlist
 from resources.store import Store, StoreList
 
-from db import db
+# from db import db
 
 app = Flask(__name__)
 app.secret_key = 'jose'
@@ -17,10 +17,6 @@ app.secret_key = 'jose'
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///data.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 api = Api(app)
-
-@app.before_first_request
-def create_tables():
-    db.create_all()
 
 # jwt object is used in authentication and authorization
 jwt = JWT(app, authenticate, identity) # create an endpoint - /auth
